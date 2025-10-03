@@ -1,0 +1,126 @@
+/* Centra la tarjeta en medio de la página */
+.main-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 2rem;
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+/* --- ESTILOS DE LA TARJETA PRINCIPAL --- */
+.card {
+  width: 100%;
+  max-width: 600px;
+  background-color: #fff;
+  border: 1px solid #dee2e6;
+  border-radius: 0.375rem;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+.card-header {
+  padding: 0.75rem 1.25rem;
+  background-color: #f7f7f7;
+  border-bottom: 1px solid #dee2e6;
+  font-size: 1.25rem;
+  font-weight: 500;
+}
+
+.card-header:first-of-type {
+  border-top-left-radius: inherit;
+  border-top-right-radius: inherit;
+}
+
+.card-body {
+  padding: 1.25rem;
+}
+
+/* --- ESTILOS DEL FORMULARIO --- */
+.form-group {
+  margin-bottom: 1rem;
+}
+
+label {
+  display: inline-block;
+  margin-bottom: 0.5rem;
+}
+
+.form-control {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.5rem 0.75rem;
+  font-size: 1rem;
+  border: 1px solid #ced4da;
+  border-radius: 0.25rem;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.form-control:focus {
+  border-color: #86b7fe;
+  outline: 0;
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+.button-group {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+.btn {
+  width: 100%;
+  font-weight: 400;
+  text-align: center;
+  cursor: pointer;
+  border: 1px solid transparent;
+  padding: 0.5rem 0.75rem;
+  font-size: 1rem;
+  border-radius: 0.25rem;
+  color: #fff;
+  transition: opacity 0.15s ease-in-out;
+}
+
+.btn:hover {
+  opacity: 0.9;
+}
+
+.btn-success {
+  background-color: #198754;
+  border-color: #198754;
+}
+
+.btn-info {
+  background-color: #0dcaf0;
+  border-color: #0dcaf0;
+}
+
+/* --- ESTILOS PARA LA TABLA DE ESTUDIANTES --- */
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  padding: 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid #dee2e6;
+}
+
+thead th {
+  background-color: #f8f9fa;
+  color: #495057;
+  font-weight: 600;
+}
+
+tbody tr:hover {
+  background-color: #e9ecef;
+}
+
+.no-students-message {
+  color: #6c757d;
+  text-align: center;
+  padding: 1rem;
+}
