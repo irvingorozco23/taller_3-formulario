@@ -1,5 +1,7 @@
-import { useState } from 'react';
-import './App.css'; // Es importante que este archivo se esté importando
+// 1. Importamos 'useState' y 'useEffect'.
+import { useState, useEffect } from 'react';
+// Mantenemos la importación de tu archivo CSS local.
+import './App.css';
 
 function App() {
   // Estado para guardar los datos del formulario actual
@@ -11,26 +13,50 @@ function App() {
     correo: ''
   });
 
-  // Estado para guardar la lista de todos los estudiantes registrados
-  const [listaEstudiantes, setListaEstudiantes] = useState([]);
+  // Estado para el mensaje de error
+  const [error, setError] = useState('');
+
+  // 2. LEER DATOS DE LOCAL STORAGE AL INICIAR
+  const [listaEstudiantes, setListaEstudiantes] = useState(() => {
+    try {
+      const estudiantesGuardados = localStorage.getItem('listaEstudiantes');
+      return estudiantesGuardados ? JSON.parse(estudiantesGuardados) : [];
+    } catch (error) {
+      console.error("Error al leer de Local Storage", error);
+      return [];
+    }
+  });
+
+  // 3. GUARDAR DATOS EN LOCAL STORAGE CUANDO HAY CAMBIOS
+  useEffect(() => {
+    try {
+      localStorage.setItem('listaEstudiantes', JSON.stringify(listaEstudiantes));
+    } catch (error) {
+      console.error("Error al guardar en Local Storage", error);
+    }
+  }, [listaEstudiantes]);
 
   // Función que se ejecuta cada vez que escribes en un campo del formulario
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setEstudiante({ ...estudiante, [name]: value });
+    if (error) {
+      setError('');
+    }
   };
 
   // Función que se ejecuta al presionar el botón "Enviar"
   const handleSubmit = (event) => {
-    event.preventDefault(); // Evita que la página se recargue
+    event.preventDefault();
 
     if (!estudiante.ine.trim() || !estudiante.nombre.trim()) {
-      alert("Debes completar al menos el Número de INE y el Nombre.");
+      setError("Debes completar al menos el Número de INE y el Nombre.");
       return;
     }
 
     setListaEstudiantes([...listaEstudiantes, estudiante]);
     handleReset();
+    setError('');
   };
 
   // Función para limpiar los campos del formulario
@@ -52,6 +78,7 @@ function App() {
         </div>
         <div className="card-body">
           <form onSubmit={handleSubmit}>
+            {error && <p className="error-message">{error}</p>}
             <div className="form-group">
               <label htmlFor="ine">Núm. Ine:</label>
               <input type="text" id="ine" name="ine" className="form-control" value={estudiante.ine} onChange={handleInputChange} />
@@ -78,8 +105,6 @@ function App() {
             </div>
           </form>
         </div>
-
-        {/* --- SECCIÓN DE LA LISTA DE ESTUDIANTES --- */}
         <div className="card-header">
           Lista de Estudiantes
         </div>
@@ -117,3 +142,4 @@ function App() {
 }
 
 export default App;
+
