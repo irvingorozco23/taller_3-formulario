@@ -1,10 +1,8 @@
-// 1. Importamos 'useState' y 'useEffect'.
 import { useState, useEffect } from 'react';
-// Mantenemos la importación de tu archivo CSS local.
+// ¡Asegúrate de que esta importación esté presente!
 import './App.css';
 
 function App() {
-  // Estado para guardar los datos del formulario actual
   const [estudiante, setEstudiante] = useState({
     ine: '',
     nombre: '',
@@ -12,73 +10,95 @@ function App() {
     telefono: '',
     correo: ''
   });
-
-  // Estado para el mensaje de error
+  const [listaEstudiantes, setListaEstudiantes] = useState([]);
   const [error, setError] = useState('');
+  const [mensaje, setMensaje] = useState('');
 
-  // 2. LEER DATOS DE LOCAL STORAGE AL INICIAR
-  const [listaEstudiantes, setListaEstudiantes] = useState(() => {
+  // Cargar estudiantes desde el backend al iniciar
+  const fetchEstudiantes = async () => {
     try {
-      const estudiantesGuardados = localStorage.getItem('listaEstudiantes');
-      return estudiantesGuardados ? JSON.parse(estudiantesGuardados) : [];
-    } catch (error) {
-      console.error("Error al leer de Local Storage", error);
-      return [];
+      const response = await fetch('http://localhost:3001/api/estudiantes');
+      const data = await response.json();
+      setListaEstudiantes(data);
+    } catch (err) {
+      setError('No se pudo conectar con el servidor.');
     }
-  });
+  };
 
-  // 3. GUARDAR DATOS EN LOCAL STORAGE CUANDO HAY CAMBIOS
   useEffect(() => {
-    try {
-      localStorage.setItem('listaEstudiantes', JSON.stringify(listaEstudiantes));
-    } catch (error) {
-      console.error("Error al guardar en Local Storage", error);
-    }
-  }, [listaEstudiantes]);
+    fetchEstudiantes();
+  }, []);
 
-  // Función que se ejecuta cada vez que escribes en un campo del formulario
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setEstudiante({ ...estudiante, [name]: value });
-    if (error) {
-      setError('');
-    }
   };
 
-  // Función que se ejecuta al presionar el botón "Enviar"
-  const handleSubmit = (event) => {
-    event.preventDefault();
+  const handleReset = () => {
+    setEstudiante({ ine: '', nombre: '', paterno: '', telefono: '', correo: '' });
+    setError('');
+    setMensaje('');
+  };
 
-    if (!estudiante.ine.trim() || !estudiante.nombre.trim()) {
-      setError("Debes completar al menos el Número de INE y el Nombre.");
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    if (!estudiante.ine.trim() || !estudiante.nombre.trim() || !estudiante.paterno.trim()) {
+      setError("Los campos INE, Nombre y Apellido son obligatorios.");
       return;
     }
 
-    setListaEstudiantes([...listaEstudiantes, estudiante]);
-    handleReset();
-    setError('');
+    try {
+      const response = await fetch('http://localhost:3001/api/estudiantes', {
+//...
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          num_ine: estudiante.ine,
+          nombre: estudiante.nombre,
+          apellido_paterno: estudiante.paterno,
+          telefono: estudiante.telefono,
+          correo: estudiante.correo
+        }),
+      });
+
+      if (response.ok) {
+        setMensaje('¡Estudiante registrado exitosamente!');
+        fetchEstudiantes(); // Recargar la lista
+        handleReset();
+      } else {
+        setError('No se pudo registrar el estudiante. Inténtalo de nuevo.');
+      }
+    } catch (err) {
+      setError('Error de conexión al intentar registrar.');
+    }
   };
 
-  // Función para limpiar los campos del formulario
-  const handleReset = () => {
-    setEstudiante({
-      ine: '',
-      nombre: '',
-      paterno: '',
-      telefono: '',
-      correo: ''
-    });
+  const handleEliminar = async (id) => {
+    if (!window.confirm("¿Estás seguro de que quieres eliminar este estudiante?")) return;
+    try {
+      const response = await fetch(`http://localhost:3001/api/estudiantes/${id}`, {
+        method: 'DELETE'
+      });
+      if (response.ok) {
+        setMensaje('Estudiante eliminado.');
+        fetchEstudiantes(); // Recargar la lista
+      } else {
+        setError('No se pudo eliminar el estudiante.');
+      }
+    } catch (err) {
+      setError('Error de conexión al intentar eliminar.');
+    }
   };
 
   return (
     <div className="main-wrapper">
       <div className="card">
-        <div className="card-header">
-          Formulario
-        </div>
+        <div className="card-header">Formulario</div>
         <div className="card-body">
           <form onSubmit={handleSubmit}>
             {error && <p className="error-message">{error}</p>}
+            {mensaje && <p style={{color: 'green'}}>{mensaje}</p>}
+            
             <div className="form-group">
               <label htmlFor="ine">Núm. Ine:</label>
               <input type="text" id="ine" name="ine" className="form-control" value={estudiante.ine} onChange={handleInputChange} />
@@ -99,15 +119,17 @@ function App() {
               <label htmlFor="correo">Correo:</label>
               <input type="email" id="correo" name="correo" className="form-control" value={estudiante.correo} onChange={handleInputChange} />
             </div>
+            
             <div className="button-group">
               <button type="submit" className="btn btn-success">Enviar</button>
               <button type="button" onClick={handleReset} className="btn btn-info">Restablecer</button>
             </div>
           </form>
         </div>
-        <div className="card-header">
-          Lista de Estudiantes
-        </div>
+      </div>
+
+      <div className="card">
+        <div className="card-header">Lista de Estudiantes</div>
         <div className="card-body">
           {listaEstudiantes.length > 0 ? (
             <table>
@@ -118,16 +140,20 @@ function App() {
                   <th>Apellido</th>
                   <th>Teléfono</th>
                   <th>Correo</th>
+                  <th>Acciones</th>
                 </tr>
               </thead>
               <tbody>
-                {listaEstudiantes.map((est, index) => (
-                  <tr key={index}>
-                    <td>{est.ine}</td>
+                {listaEstudiantes.map((est) => (
+                  <tr key={est.num_ine}>
+                    <td>{est.num_ine}</td>
                     <td>{est.nombre}</td>
-                    <td>{est.paterno}</td>
+                    <td>{est.apellido_paterno}</td>
                     <td>{est.telefono}</td>
                     <td>{est.correo}</td>
+                    <td>
+                      <button onClick={() => handleEliminar(est.num_ine)} className="btn btn-danger">Eliminar</button>
+                    </td>
                   </tr>
                 ))}
               </tbody>
