@@ -28,41 +28,15 @@ const connection = mysql.createConnection({
 
 connection.connect(error => {
     if (error) {
-        console.error("Error al conectar a la base de datos:", error);
+        console.error("🔴 Error al conectar a la base de datos:", error);
         throw error;
     }
-    console.log("¡Conexión a la base de datos establecida exitosamente!");
+    console.log("🟢 ¡Conexión a la base de datos establecida exitosamente!");
 });
 
 // -------------------------------------------------------------------
 // 4. RUTAS DE LA API (ENDPOINTS)
 // -------------------------------------------------------------------
-/**
- * @route POST /api/estudiantes
- * @description Añade un nuevo estudiante a la base de datos.
- */
-app.post('/api/estudiantes', (req, res) => {
-    const sql = "INSERT INTO estudiantes (num_ine,nombre,apellido_paterno,telefono,correo) VALUES (?)";
-    
-    // ✅ CORRECCIÓN DEFINITIVA: Los nombres coinciden con el frontend y la BD
-    const values = [
-        req.body.num_ine,
-        req.body.nombre,
-        req.body.apellido_paterno,
-        req.body.telefono,
-        req.body.correo
-    ];
-
-    connection.query(sql, [values], (error, result) => {
-        if (error) {
-            console.error("Error al añadir estudiante:", error);
-            return res.status(500).json({ error: "Error interno del servidor", details: error.sqlMessage });
-        }
-        console.log("Estudiante añadido exitosamente:", result);
-        return res.status(201).json({ message: "Estudiante añadido exitosamente" });
-    });
-});
-
 
 /**
  * @route GET /api/estudiantes
@@ -80,11 +54,56 @@ app.get('/api/estudiantes', (req, res) => {
 });
 
 /**
+ * @route POST /api/estudiantes
+ * @description Añade un nuevo estudiante, validando los datos primero.
+ */
+app.post('/api/estudiantes', (req, res) => {
+    console.log("👉 Datos recibidos desde el formulario:", req.body);
+
+    // ✅ PASO 1: VALIDACIÓN
+    const { num_ine, nombre, apellido_paterno, telefono, correo } = req.body;
+
+    if (!num_ine || !nombre || !apellido_paterno || !correo || !telefono) {
+        return res.status(400).json({ error: "Los campos INE, nombre, apellido, teléfono y correo son obligatorios." });
+    }
+    if (!/^\d{10,13}$/.test(num_ine)) {
+        return res.status(400).json({ error: "Formato de INE inválido (debe tener de 10 a 13 dígitos)." });
+    }
+    if (!/^\d{10}$/.test(telefono)) {
+        return res.status(400).json({ error: "Formato de teléfono inválido (debe tener 10 dígitos)." });
+    }
+    if (!/^[a-zA-Z\s]{2,50}$/.test(nombre)) {
+        return res.status(400).json({ error: "El nombre solo debe contener letras y tener entre 2 y 50 caracteres." });
+    }
+
+    if (!/^[a-zA-Z\s]{2,50}$/.test(apellido_paterno)) {
+        return res.status(400).json({ error: "El apellido solo debe contener letras y tener entre 2 y 50 caracteres." });
+     
+    }
+    
+    // ✅ PASO 2: SI LA VALIDACIÓN PASA, SE GUARDA EN LA BASE DE DATOS
+    const sql = "INSERT INTO estudiantes (num_ine, nombre, apellido_paterno, telefono, correo) VALUES (?)";
+    const values = [num_ine, nombre, apellido_paterno, telefono, correo];
+
+    connection.query(sql, [values], (error, result) => {
+        if (error) {
+            console.error("Error al añadir estudiante:", error);
+            if (error.code === 'ER_DUP_ENTRY') {
+                return res.status(409).json({ error: "El Núm. de INE o el correo ya existen." });
+            }
+            return res.status(500).json({ error: "Error interno del servidor al guardar." });
+        }
+        console.log("✅ Estudiante añadido exitosamente:", result.insertId);
+        return res.status(201).json({ message: "Estudiante añadido exitosamente" });
+    });
+});
+
+
+/**
  * @route DELETE /api/estudiantes/:id
  * @description Elimina un estudiante por su ID (num_ine).
  */
 app.delete('/api/estudiantes/:id', (req, res) => {
-    // Obtenemos el ID de los parámetros de la URL
     const id = req.params.id;
     const sql = "DELETE FROM estudiantes WHERE num_ine = ?";
 
@@ -93,12 +112,9 @@ app.delete('/api/estudiantes/:id', (req, res) => {
             console.error("Error al eliminar estudiante:", error);
             return res.status(500).json({ error: "Error interno del servidor" });
         }
-        
-        // `affectedRows` nos dice si se borró algo. Si es 0, el ID no existía.
         if (result.affectedRows === 0) {
             return res.status(404).json({ message: "Estudiante no encontrado" });
         }
-
         return res.json({ message: "Estudiante eliminado exitosamente" });
     });
 });
@@ -106,8 +122,6 @@ app.delete('/api/estudiantes/:id', (req, res) => {
 // -------------------------------------------------------------------
 // 5. INICIAR EL SERVIDOR
 // -------------------------------------------------------------------
-// Usamos el puerto definido en el .env o el 3001 como alternativa
-
 app.listen(port, () => {
     console.log(`🚀 Servidor backend corriendo en http://localhost:${port}`);
 });

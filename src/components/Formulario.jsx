@@ -49,40 +49,46 @@ const Formulario = ({ onAgregarEstudiante, onCancelar }) => {
     }
   };
 
-  return (
-    <div className="card">
-      <div className="card-header">Formulario</div>
-      <div className="card-body">
-        {/* 3. Actualizar los 'name' en los inputs */}
-        <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label htmlFor="num_ine" className="form-label">Núm. Ine:</label>
-            <input type="text" id="num_ine" name="num_ine" className="form-control" value={formData.num_ine} onChange={handleChange} required />
-          </div>
-          <div className="form-group">
-            <label htmlFor="nombre" className="form-label">Nombre:</label>
-            <input type="text" id="nombre" name="nombre" className="form-control" value={formData.nombre} onChange={handleChange} required />
-          </div>
-          <div className="form-group">
-            <label htmlFor="apellido_paterno" className="form-label">Apellido Paterno:</label>
-            <input type="text" id="apellido_paterno" name="apellido_paterno" className="form-control" value={formData.apellido_paterno} onChange={handleChange} required />
-          </div>
-          <div className="form-group">
-            <label htmlFor="correo" className="form-label">Correo:</label>
-            <input type="email" id="correo" name="correo" className="form-control" value={formData.correo} onChange={handleChange} required />
-          </div>
-          <div className="form-group">
-            <label htmlFor="telefono" className="form-label">Teléfono:</label>
-            <input type="tel" id="telefono" name="telefono" className="form-control" value={formData.telefono} onChange={handleChange} />
-          </div>
-          <div className="button-group">
-            <button type="submit" className="btn btn-success">Enviar</button>
-            <button type="button" className="btn btn-info" onClick={onCancelar}>Restablecer</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  );
+ return (
+    <form onSubmit={handleSubmit}>
+        {/* Campo num_ine */}
+        <div className="form-group">
+            <label>Núm. Ine:</label>
+            <input name="num_ine" onChange={handleInputChange} value={estudiante.num_ine} />
+            {errores.num_ine && <p className="text-danger">{errores.num_ine}</p>}
+        </div>
+
+        {/* Campo nombre */}
+        <div className="form-group">
+            <label>Nombre:</label>
+            <input name="nombre" onChange={handleInputChange} value={estudiante.nombre} />
+            {errores.nombre && <p className="text-danger">{errores.nombre}</p>}
+        </div>
+
+        {/* Campo apellido_paterno */}
+        <div className="form-group">
+            <label>Apellido Paterno:</label>
+            <input name="apellido_paterno" onChange={handleInputChange} value={estudiante.apellido_paterno} />
+            {errores.apellido_paterno && <p className="text-danger">{errores.apellido_paterno}</p>}
+        </div>
+
+        {/* Campo telefono */}
+        <div className="form-group">
+            <label>Teléfono:</label>
+            <input name="telefono" onChange={handleInputChange} value={estudiante.telefono} />
+            {errores.telefono && <p className="text-danger">{errores.telefono}</p>}
+        </div>
+
+        {/* Campo correo */}
+        <div className="form-group">
+            <label>Correo:</label>
+            <input name="correo" onChange={handleInputChange} value={estudiante.correo} />
+            {errores.correo && <p className="text-danger">{errores.correo}</p>}
+        </div>
+        
+        <button type="submit">Enviar</button>
+    </form>
+);
 };
 
 export default Formulario;
