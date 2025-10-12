@@ -1,0 +1,136 @@
+\documentclass{article}
+
+% --- PAQUETES NECESARIOS ---
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx} % Permite insertar imágenes
+\usepackage{geometry} % Permite ajustar los márgenes
+\usepackage{hyperref} % Permite crear enlaces web clickables
+\usepackage{subcaption} % Permite crear cuadrículas de imágenes
+
+% --- CONFIGURACIÓN DE LA PÁGINA ---
+\geometry{a4paper, margin=1in} % Márgenes de 1 pulgada
+\setlength{\parindent}{0pt} % Elimina la sangría al inicio de los párrafos
+\setlength{\parskip}{1em}   % Añade un espacio vertical entre párrafos
+
+\begin{document}
+
+% ===================================================================
+% PÁGINA 1: PORTADA
+% ===================================================================
+\begin{titlepage}
+    \centering
+    
+    % --- Cabecera con dos logos, uno al lado del otro ---
+    \begin{minipage}{0.45\textwidth}
+        \centering
+        \includegraphics[width=0.7\linewidth]{Img/logo_unach_general.png}
+    \end{minipage}
+    \hfill % Espacio flexible para empujar el segundo logo a la derecha
+    \begin{minipage}{0.45\textwidth}
+        \centering
+        \includegraphics[width=0.7\linewidth]{Img/logo_facultad.png}
+    \end{minipage}
+
+    \vspace{2cm} % Espacio vertical
+    
+    {\Huge\bfseries UNIVERSIDAD AUTÓNOMA DE CHIAPAS}\\[1cm]
+    {\Large\bfseries Facultad de Contaduría y Administración Campus I}\\[1cm]
+    {\Large Licenciatura en Ingeniería en Desarrollo y Tecnologías de Software}\\[3cm]
+    
+    % --- Tabla para alinear la información del curso y del alumno ---
+    \begin{tabular}{l p{8cm}}
+        \textbf{Asignatura:} & Taller de desarrollo 3 \\
+        \textbf{Docente:} & Gutiérrez Alfaro Luis \\
+        \textbf{Alumno:} & Orozco López Irving \\
+        \textbf{Semestre:} & 5to \hspace{1cm} \textbf{Grupo:} "M" \\
+    \end{tabular}
+    
+    \vfill % Empuja el contenido siguiente al final de la página
+    
+    {\large Tuxtla Gutiérrez, Chiapas miércoles 08 de octubre del 2025}
+\end{titlepage}
+
+
+% ===================================================================
+% PÁGINA 2: CÓDIGO (Server y App)
+% ===================================================================
+\newpage % Inicia una nueva página
+
+\begin{figure}[h!]
+    \centering
+    % --- Imagen Izquierda (Server.js) ---
+    \begin{minipage}{0.48\textwidth}
+        \includegraphics[width=\linewidth]{Img/server_js.png}
+        \centering
+        \subsection*{Server.js}
+        \small En esta parte del código se le añadió la validación correspondiente lo que hace que valide los campos del formulario por medio de una conexión del server con el front.
+    \end{minipage}
+    \hfill % Espacio entre las imágenes
+    % --- Imagen Derecha (app.jsx) ---
+    \begin{minipage}{0.48\textwidth}
+        \includegraphics[width=\linewidth]{Img/app_jsx.png}
+        \centering
+        \subsection*{app.jsx}
+        \small En esta parte también añadí una validación dentro del front para asegurar que se validen correctamente.
+    \end{minipage}
+\end{figure}
+
+
+% ===================================================================
+% PÁGINA 3: FRONTEND (Estructura de 5 imágenes: 3 arriba, 2 abajo)
+% ===================================================================
+\newpage
+
+\section*{Frontend}
+
+\begin{figure}[h!]
+    \centering
+    % --- Primera Fila de Imágenes (3 imágenes) ---
+    \begin{subfigure}[b]{0.32\textwidth}
+        \includegraphics[width=\textwidth]{Img/frontend_1.png}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.32\textwidth}
+        \includegraphics[width=\textwidth]{Img/frontend_2.png}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.32\textwidth}
+        \includegraphics[width=\textwidth]{Img/frontend_3.png}
+    \end{subfigure}
+    
+    \vspace{1cm} % Espacio vertical entre las filas de imágenes
+    
+    % --- Segunda Fila de Imágenes (2 imágenes) ---
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{Img/frontend_4.png}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{Img/frontend_5.png}
+    \end{subfigure}
+
+    \caption*{Aquí se muestra como pide validación para el correo electrónico y para el ine pide que sea de diez dígitos. También se muestra la validación del numero de teléfono (solo números) y del nombre (solo letras). Al completar bien los datos se guarda el contenido.}
+\end{figure}
+
+
+% ===================================================================
+% PÁGINA 4: BACKEND y GITHUB
+% ===================================================================
+\newpage
+
+\section*{Backend}
+Aquí se muestra como se hace la conexión y uso de la api al guardar correctamente el alumno.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.9\textwidth]{Img/backend_terminal.png}
+\end{figure}
+
+\section*{Enlace a repositorio en github}
+\url{https://github.com/irvingorozco23/taller_3-formulario.git}
+
+\textit{codigo de overlife esta en el repositorio con el nombre de principal
+
+}
+
+\end{document}
