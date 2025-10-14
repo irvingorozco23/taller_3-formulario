@@ -50,7 +50,9 @@ function App() {
     if (!estudiante.num_ine.trim()) nuevosErrores.num_ine = "El Núm. de INE es obligatorio.";
     if (!estudiante.nombre.trim()) nuevosErrores.nombre = "El nombre es obligatorio.";
     if (!estudiante.apellido_paterno.trim()) nuevosErrores.apellido_paterno = "El apellido es obligatorio.";
-    
+    if (estudiante.correo && !/\S+@\S+\.\S+/.test(estudiante.correo)) nuevosErrores.correo = "El correo no es válido.";
+    if (estudiante.telefono && !/^\d{10}$/.test(estudiante.telefono)) nuevosErrores.telefono = "El teléfono debe tener 10 dígitos.";
+
     if (Object.keys(nuevosErrores).length > 0) {
       setErroresDeCampo(nuevosErrores);
       return; 
